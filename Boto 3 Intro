@@ -1,0 +1,101 @@
+Boto3 is the AWS SDK for Python. It enables Python developers to create, configure, and manage AWS services, such as EC2 and S3. Boto provides an easy-to-use, object-oriented API, as well as low-level access to AWS services.
+
+Installing the AWS CLI and Boto3
+
+Amazon Linux 2
+
+The AWS CLI is already installed on Amazon Linux 2.
+
+Install Python 3:
+
+sudo yum install -y python3-pip python3 python3-setuptools
+
+Install Boto3:
+
+pip3 install boto3 --user
+
+macOS
+
+Install Python3 using Homebrew:
+
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Install Python 3:
+
+brew install python
+
+Insert the Homebrew Python directory at the top of your PATH environment variable:
+
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+
+Verify you are using Python 3:
+
+python --version
+
+Install the AWS CLI and Boto3:
+
+pip install awscli boto3 --upgrade --user
+
+The --upgrade option tells pip to upgrade any requirements that are already installed. The --user option tells pip to install the program to a subdirectory of your user directory to avoid modifying libraries used by your operating system.
+
+You may need to add the user directory to your PATH, for example, ~/Library/Python/3.7/bin.
+
+Run the following command at the terminal, and add it to your .bashrc, .zshrc, or other shell configuration file:
+
+export PATH=~/Library/Python/3.7/bin:$PATH
+
+Configuring your AWS environment
+
+Obtain your AWS access key and secret access key from the AWS Management Console. Run the following command:
+
+aws configure
+
+This sets up a text file that the AWS CLI and Boto3 libraries look at by default for your credentials: ~/.aws/credentials.
+
+The file should look like this:
+
+[default]
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Test Your Credentials
+AWS CLI
+Run the following command:
+
+aws sts get-caller-identity
+The output should look like this:
+
+{
+    "UserId": "AIDAJKLMNOPQRSTUVWXYZ",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/devuser"
+}
+
+Boto3
+
+Run python3 interactively:
+
+python3
+
+Run the following commands:
+
+>>> import boto3
+>>> sts = boto3.client('sts')
+>>> sts.get_caller_identity()
+
+The output should look like this:
+
+{'UserId': 'AIDAJKLMNOPQRSTUVWXYZ', 'Account': '123456789012', 'Arn': 'arn:aws:iam::123456789012:user/devuser', 'ResponseMetadata': {'RequestId': '3e310806-50c9-11e9-93ae-dbac86675630', 'HTTPStatusCode': 200, 'HTTPHeaders': {'x-amzn-requestid': '3e310806-50c9-11e9-93ae-dbac86675630', 'content-type': 'text/xml', 'content-length': '404', 'date': 'Wed, 27 Mar 2019 19:48:06 GMT'}, 'RetryAttempts': 0}}
+Quit using exit() or Ctrl+D:
+
+>>> exit()
+
+Resources
+
+Boto3 Documentation: 
+https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
+
+Botocore Documentation: 
+https://botocore.amazonaws.com/v1/documentation/api/latest/index.html
+
+AWS Community Python Forum: 
+https://forums.aws.amazon.com/forum.jspa?forumID=132
