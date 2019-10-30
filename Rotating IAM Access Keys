@@ -1,0 +1,21 @@
+In this lesson, we'll create a Lambda function that revokes user access keys periodically to enforce rotation and mitigate risk.
+
+The Lambda function will perform the following:
+
+Collect IAM users using pagination
+
+Scan each user for existing IAM access keys older than 90 days
+
+Deactivate the keys
+
+Send email alerts to the administrator
+
+Scheduled CloudWatch Rule:
+
+Triggers the Lambda function to run (e.g., weekly)
+
+Amazon Simple Email Service (Amazon SES)
+
+Be sure to use an SES-verified email address to ensure proper delivery of emails.
+
+SES API endpoints are not available in all regions. Go here for a list of supported endpoints.
