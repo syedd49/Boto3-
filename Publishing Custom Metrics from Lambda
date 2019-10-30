@@ -1,0 +1,66 @@
+CloudWatch custom metrics are coded into your applications and can be used to report custom business and operational data. In this lesson, we will learn how to publish custom CloudWatch metric data from a Lambda function, reporting several key performance indicators (KPIs). These data can help us monitor progress toward sales, marketing, and customer service goals.
+
+Install the demo app using the AWS Serverless Application Model. You can find the instructions for installing the AWS SAM CLI here.
+
+Create the Lambda Deployment Package
+
+Run the following command:
+
+cd shopping-cart-app
+
+Create an S3 bucket in the location where you want to save the packaged code. (If you want to use an existing S3 bucket, skip this step.)
+
+ aws s3 mb s3://123456789012-shopping-cart-app
+ 
+Create the deployment artifacts with dependencies.
+
+ sam build
+ 
+Create the Lambda function deployment package by running the following package AWS SAM CLI command at the command prompt:
+
+ sam package \
+     --output-template-file packaged.yaml \
+     --s3-bucket 123456789012-shopping-cart-app
+     
+In the AWS SAM CLI, use the deploy command to deploy all of the resources that you defined in the template.
+
+ sam deploy \
+     --template-file packaged.yaml \
+     --stack-name shopping-cart-app \
+     --capabilities CAPABILITY_IAM
+     
+Locate the API Gateway Endpoint URLs
+
+Open the AWS CloudFormation console at https://console.aws.amazon.com/cloudformation.
+
+Choose the AWS CloudFormation stack that you created in the preceding step from the list.
+
+Under Outputs, note the API Gateway endpoint URLs.
+
+Browse each one and observe the JSON responses.
+
+Generate Traffic
+
+Using the API Gateway endpoint URLs from the previous step, generate traffic against each of these endpoints.
+
+Run an HTTP testing tool like vegeta to generate traffic to your API gateway endpoints.
+
+Modify URLs.txt to use the endpoint URLs in your account.
+
+Run a test for 60 minutes.
+
+ cat URLS.txt | vegeta attack -duration=60m | tee results.bin | vegeta report
+ 
+View Custom Metrics
+
+You may view custom metric data while a load test is in progress.
+
+Open the CloudWatch Console at https://console.aws.amazon.com/cloudwatch.
+
+Navigate to Metrics.
+
+Under All metrics, select ShoppingCartApp.
+
+Select Metrics with no dimensions.
+
+Select ItemsAddedToCart, OrderTotal, and ViewProduct.
