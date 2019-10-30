@@ -1,0 +1,70 @@
+In this lesson, we'll learn how to automate the tagging of EC2 instances and their corresponding resources using a Lambda function with CloudTrail and CloudWatch. The function will ensure that users can work only on those resources that they have created based on resource tags. This is enforced via an IAM policy.
+
+Create the IAM Policy
+
+This policy allows Start/Stop/Reboot/Terminate for EC2 instances where the tag Owner matches the current requester's user ID.
+
+Run the following command:
+
+ aws iam create-policy \
+ --policy-name TagBasedEC2RestrictionsPolicy \
+ --policy-document file://TagBasedEC2RestrictionsPolicy.json
+ 
+Note the policy ARN.
+
+Attach IAM Policy to Group
+
+Create a group called developers:
+
+ aws iam create-group --group-name developers
+ 
+Attach the policy to the group:
+
+ aws iam attach-group-policy \
+ --policy-arn arn:aws:iam::123456789012:policy/TagBasedEC2RestrictionsPolicy \
+ --group-name developers
+ 
+Create an IAM Role for the Lambda Function
+
+Create the IAM role:
+
+ aws iam create-role \
+ --role-name LambdaAllowTaggingEC2Role \
+ --assume-role-policy-document file://trust_policy.json
+ 
+Define the access policy:
+
+ aws iam put-role-policy \
+ --role-name LambdaAllowTaggingEC2Role \
+ --policy-name LambdaAllowTaggingEC2Policy \
+ --policy-document file://access_policy.json
+ 
+Create the Lambda Function
+
+Create the function TagEC2Resources.
+
+Create a CloudWatch Rule
+
+Create the rule:
+
+ aws events put-rule \
+ --name AutoTagResources \
+ --event-pattern file://event_pattern.json
+ 
+Set the Lambda function as the target:
+
+ aws events put-targets \
+ --rule AutoTagResources \
+ --targets Id=1,Arn=arn:aws:lambda:us-east-2:123456789012:function:TagEC2Resources
+ 
+Create an EC2 Instance as User
+
+Create an EC2 instance as an administrative/root user. Observe the Owner tag.
+
+Try working with EC2 instances that are untagged or owned by other users, and observe the "Access Denied" errors.
+
+What Next?
+
+Now that you know you can tag resources with a Lambda function in response to events, you can apply the same logic to other resources such as RDS databases or S3 buckets. With resource groups, each user can focus on just their resources, and the IAM policy provided in this lesson ensures that no unauthorized action is possible on someone else's instance.
+
+Additionally, tags are useful in custom billing reports to project costs and determine how much money each individual owner is spending. You can activate the Owner tag from the Cost Allocation Tags section of your billing console to include it in your detailed billing reports. For more information, see Applying Tags.
